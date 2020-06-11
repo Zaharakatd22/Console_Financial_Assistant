@@ -25,7 +25,7 @@ def main():
         print()
         print(f"Your monthly payment = {monthly_payment}" if last_month_payment == monthly_payment
               else f"Your monthly payment = {monthly_payment} with last month payment = {last_month_payment}.")
-    else:
+    else:  # incorrect input
         print("Please input correct request.")
 
 
