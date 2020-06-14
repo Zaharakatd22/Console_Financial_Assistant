@@ -4,18 +4,20 @@ import argparse
 
 
 def main():
-    args = argparse.ArgumentParser()
-    args.add_argument("credit_type", help="type of credit", type=str, action="store_true")
-    args.add_argument("credit_payment", help="credit monthly payment", type=float, action="store_true")
-    args.add_argument("credit_principal", help="credit principal", type=int, action="store_true")
-    args.add_argument("credit_periods", help="periods of credit", type=int, action="store_true")
-    args.add_argument("credit_interest", help="credit interest", type=float, action="store_true")
+    args = argparse.ArgumentParser(prog="financial_assistant", description="Calculate diff and annuity type of credit.",
+                                   usage="%(prog)s [type of credit] [credit principal]"
+                                         " [periods of credit] [credit interest]")
+    args.add_argument("--type", help="type of credit", choices=["diff", "annuity"])
+    args.add_argument("--payment", help="credit monthly payment", type=float)
+    args.add_argument("--principal", help="credit principal", type=int)
+    args.add_argument("--periods", help="periods of credit", type=int)
+    args.add_argument("--interest", help="credit interest", type=float)
     args.parse_args()
 
-    credit_type: str = args.credit_type
-    credit_principal: int = args.credit_principal
-    credit_periods: int = args.credit_periods
-    credit_interest: float = args.credit_interest
+    credit_type: str = args.type
+    credit_principal: int = args.principal
+    credit_periods: int = args.periods
+    credit_interest: float = args.interest
     i: float = (credit_interest / 100) / 12
 
     if credit_type == "diff":
