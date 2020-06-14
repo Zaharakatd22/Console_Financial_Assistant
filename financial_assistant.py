@@ -1,32 +1,66 @@
 from math import ceil
+from math import floor
 from math import log
 import argparse
 
 
 def main():
-    args = argparse.ArgumentParser(prog="financial_assistant", description="Calculate diff and annuity type of credit.",
-                                   usage="%(prog)s [type of credit] [credit principal]"
-                                         " [periods of credit] [credit interest]")
-    args.add_argument("--type", help="type of credit", choices=["diff", "annuity"])
-    args.add_argument("--payment", help="credit monthly payment", type=float)
-    args.add_argument("--principal", help="credit principal", type=int)
-    args.add_argument("--periods", help="periods of credit", type=int)
-    args.add_argument("--interest", help="credit interest", type=float)
-    args.parse_args()
+    parser = argparse.ArgumentParser(prog="financial_assistant",
+                                     description="Calculate diff and annuity type of credit.",
+                                     usage="%(prog)s [type of credit] [credit principal]"
+                                           " [periods of credit] [credit interest]")
+    parser.add_argument("--type", help="type of credit", choices=["diff", "annuity"])
+    parser.add_argument("--payment", help="credit monthly payment", type=float)
+    parser.add_argument("--principal", help="credit principal", type=int)
+    parser.add_argument("--periods", help="periods of credit", type=int)
+    parser.add_argument("--interest", help="credit interest", type=float)
+    parser.add_argument('--version', action='version', version='%(prog)s 0.0.2@alpha')
+    args = parser.parse_args()
 
     credit_type: str = args.type
     credit_principal: int = args.principal
     credit_periods: int = args.periods
     credit_interest: float = args.interest
+    credit_payment: float = args.payment
     i: float = (credit_interest / 100) / 12
 
     if credit_type == "diff":
         pass
     elif credit_type == "annuity":
-        credit_annuity_payment: int = ceil(credit_principal * (i * (1 + i) ** credit_periods)
-                                           / ((1 + i) ** credit_periods - 1))
-        credit_overpayment: int = credit_principal - credit_annuity_payment * credit_periods
-        print(f"Your annuity payment = {credit_annuity_payment}!")
+        if credit_payment is None:
+            credit_payment: int = ceil(credit_principal * (i * (1 + i) ** credit_periods)
+                                       / ((1 + i) ** credit_periods - 1))
+            print(f"Your annuity payment = {credit_payment}!")
+        elif credit_principal is None:
+            credit_principal: int = floor(credit_payment * ((1 + i) ** credit_periods - 1)
+                                          / (i * (1 + i) ** credit_periods))
+            print(f"Your credit principal = {credit_principal}!")
+        else:  # credit_periods is None
+            credit_periods: int = ceil(log(credit_payment / (credit_payment - i * credit_principal), 1 + i))
+            years_count = credit_periods // 12
+            months_count = credit_periods % 12
+            if years_count > 0 and months_count > 0:
+                if years_count == 1 and months_count > 1:
+                    print(f"You need {years_count} year and {months_count} months to repay this credit!")
+                elif years_count > 1 and months_count == 1:
+                    print(f"You need {years_count} years and {months_count} month to repay this credit!")
+                else:
+                    print(f"You need {years_count} years and {months_count} months to repay this credit!")
+            else:
+                if years_count == 0 and months_count > 0:
+                    if months_count > 1:
+                        print(f"You need {months_count} months to repay this credit!")
+                    else:
+                        print(f"You need {months_count} month to repay this credit!")
+                elif years_count > 0 and months_count == 0:
+                    if years_count > 1:
+                        print(f"You need {years_count} years to repay this credit!")
+                    else:
+                        print(f"You need {years_count} year to repay this credit!")
+                else:
+                    print(f"You was already repaid this credit!")
+
+        credit_overpayment: int = abs(int(credit_payment * credit_periods - credit_principal))
         print(f"Overpayment = {credit_overpayment}")
     else:
         print("Incorrect parameters of credit type")
@@ -45,29 +79,6 @@ def main():
     #     print("Enter credit interest:")
     #     credit_interest: float = float(input("> "))
     #     i = (credit_interest / 100) / 12
-    #     months_count: int = ceil(log(monthly_payment / (monthly_payment - i * credit_principal), 1 + i))
-    #     years_count = months_count // 12
-    #     months_count = months_count % 12
-    #     if years_count > 0 and months_count > 0:
-    #         if years_count == 1 and months_count > 1:
-    #             print(f"You need {years_count} year and {months_count} months to repay this credit!")
-    #         elif years_count > 1 and months_count == 1:
-    #             print(f"You need {years_count} years and {months_count} month to repay this credit!")
-    #         else:
-    #             print(f"You need {years_count} years and {months_count} months to repay this credit!")
-    #     else:
-    #         if years_count == 0 and months_count > 0:
-    #             if months_count > 1:
-    #                 print(f"You need {months_count} months to repay this credit!")
-    #             else:
-    #                 print(f"You need {months_count} month to repay this credit!")
-    #         elif years_count > 0 and months_count == 0:
-    #             if years_count > 1:
-    #                 print(f"You need {years_count} years to repay this credit!")
-    #             else:
-    #                 print(f"You need {years_count} year to repay this credit!")
-    #         else:
-    #             print(f"You was already repaid this credit!")
     # elif request == "a":
     #     print("Enter credit principal:")
     #     credit_principal: int = int(input("> "))
