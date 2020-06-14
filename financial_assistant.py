@@ -22,10 +22,20 @@ def main():
     credit_periods: int = args.periods
     credit_interest: float = args.interest
     credit_payment: float = args.payment
+    credit_overpayment: int = 0
     i: float = (credit_interest / 100) / 12
 
     if credit_type == "diff":
-        pass
+        for m in range(1, credit_periods + 1):
+            credit_payment: int = ceil(credit_principal / credit_periods
+                                       + i * (credit_principal
+                                              - (credit_principal * (m - 1) / credit_periods)))
+            credit_overpayment += credit_payment
+            print(f"Month {m}: paid out {credit_payment}")
+
+        credit_overpayment -= credit_principal
+        print(f"Overpayment = {credit_overpayment}")
+
     elif credit_type == "annuity":
         if credit_payment is None:
             credit_payment: int = ceil(credit_principal * (i * (1 + i) ** credit_periods)
@@ -60,7 +70,7 @@ def main():
                 else:
                     print(f"You was already repaid this credit!")
 
-        credit_overpayment: int = abs(int(credit_payment * credit_periods - credit_principal))
+        credit_overpayment = abs(int(credit_payment * credit_periods - credit_principal))
         print(f"Overpayment = {credit_overpayment}")
     else:
         print("Incorrect parameters of credit type")
