@@ -5,17 +5,17 @@ import argparse
 
 def main():
     args = argparse.ArgumentParser()
-    args.add_argument("--type", help="", type=str, action="store_true")
-    args.add_argument("--payment", help="", type=float, action="store_true")
-    args.add_argument("--principal", help="", type=int, action="store_true")
-    args.add_argument("--periods", help="", type=int, action="store_true")
-    args.add_argument("--interest", help="", type=float, action="store_true")
+    args.add_argument("credit_type", help="type of credit", type=str, action="store_true")
+    args.add_argument("credit_payment", help="credit monthly payment", type=float, action="store_true")
+    args.add_argument("credit_principal", help="credit principal", type=int, action="store_true")
+    args.add_argument("credit_periods", help="periods of credit", type=int, action="store_true")
+    args.add_argument("credit_interest", help="credit interest", type=float, action="store_true")
     args.parse_args()
 
-    credit_type: str = args[1]
-    credit_principal: int = int(args[2])
-    credit_periods: int = int(args[3])
-    credit_interest: float = float(args[4])
+    credit_type: str = args.credit_type
+    credit_principal: int = args.credit_principal
+    credit_periods: int = args.credit_periods
+    credit_interest: float = args.credit_interest
     i: float = (credit_interest / 100) / 12
 
     if credit_type == "diff":
